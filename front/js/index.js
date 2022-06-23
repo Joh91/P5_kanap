@@ -5,16 +5,18 @@ de façon dynamique dans notre homepage*/
 function productAppear() {
     fetch("http://localhost:3000/api/products")
 
+    //première promesse dans laquelle on demande de retourner les résultats de la requête en JSON 
     .then((res) => {
         if (res.ok){
             return res.json(); 
         } 
     })
 
+    //deuxième promesse qui s'execute si la première est "true" 
     .then((data) => {
     
+        //déclaration d'une boucle qui va répéter la création des balises et l'ajout des données dans la section "items" selon le nombre de produits
         for(let product of data){
-            console.log(product)
         document
         .getElementById("items")
         .innerHTML += `<a href="./product.html?id=${product._id}">
@@ -26,6 +28,7 @@ function productAppear() {
                         </a>`}
     })
 
+    //Active dans le cas où notre première promesse est "false"
     .catch ((err) => {
         document
         .getElementById("items")
@@ -36,6 +39,7 @@ function productAppear() {
     
 };
 
+//declaration de la fonction productAppear
 productAppear (); 
 
 
