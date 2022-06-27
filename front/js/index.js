@@ -2,7 +2,7 @@
 /*on realise ici une requête de type GET afin de récupérer les produits et pouvoir les integrer
 de façon dynamique dans notre homepage*/ 
 
-function productAppear() {
+function productsAppear() {
     fetch("http://localhost:3000/api/products")
 
     //première promesse dans laquelle on demande de retourner les résultats de la requête en JSON 
@@ -16,14 +16,14 @@ function productAppear() {
     .then((data) => {
     
         //déclaration d'une boucle qui va répéter la création des balises et l'ajout des données dans la section "items" selon le nombre de produits
-        for(let product of data){
+        for(let products of data){
         document
         .getElementById("items")
-        .innerHTML += `<a href="./product.html?id=${product._id}">
+        .innerHTML += `<a href="./product.html?id=${products._id}">
                             <article>
-                            <img src="${product.imageUrl}" alt="${product.altText}, ${product.name}">
-                            <h3 class="product name">${product.name}</h3>
-                            <p class="productDescription">${product.description}</p>
+                            <img src="${products.imageUrl}" alt="${products.altText}, ${products.name}">
+                            <h3 class="product name">${products.name}</h3>
+                            <p class="productDescription">${products.description}</p>
                             </article>
                         </a>`}
     })
@@ -40,7 +40,7 @@ function productAppear() {
 };
 
 //declaration de la fonction productAppear
-productAppear (); 
+productsAppear(); 
 
 
 
