@@ -38,8 +38,7 @@ fetch(`http://localhost:3000/api/products/${newId}`)
        
        /*--Déclaration de la fonction getButton qui prend pour parametre "data", qui sera nécessaire à 
        l'importation des données dans le localstorage --*/
-        getButton(data);
-
+        getButton(data); 
     })
     
     //Active dans le cas où notre première promesse est "false"
@@ -59,95 +58,45 @@ productAppear();
 
 
 //----------------------Gestion du panier ----------------
-
-//Ajout d'un évènement à notre bouton ajout au panier
-    function getButton(productData) {
+// La fonction récupère l'id du bouton pour créer un évènement 
+    function getButton(data) {
         const button = document.getElementById("addToCart"); 
-
         button.addEventListener("click", () => {
-            console.log("ajout au panier"); 
-        //Récupération après "clic" des couleurs et des quantités sélectionnées 
-        const selectColors = document.getElementById("colors"); 
-        const selectQty = document.getElementById("quantity"); 
-
-        //Attribution de la couleur  et de la quantité choisie à notre object
-        const optionChoice = Object.assign({}, productData, {
-            color : selectColors.value, 
-            quantity : selectQty.value, 
-        }); 
-
-        console.log("--- optionChoice --->", optionChoice);
-
-        //Insertion des données dans un tableau à destination du localstorage 
-        let productArray = [];
-        productArray.push(optionChoice);
-        console.log("--- productArray --->", productArray);
-        //--------simplification: mettre optionChoice en parametre et supprimer productArray
-        localStorage.setItem("produit", JSON.stringify(productArray));
-    
-
-
-            //-----Seconde méthode------
-
-        // let productArray = JSON.parse(localStorage.getItem("product")); 
-        // if (productArray == null){
-        //     productArray = []
-        //     productArray.push(productData)
-        //     console.log(productArray)
-        // }
-        
-
-        
-        })
+            cartProducts(data); 
+    })
     }
 
+    //La fonction va récupérer les valeurs enregistrées dans le local storage et les enregistrer sous forme de tableau 
+    function cartProducts(data) {
+      // Récupération après "clic" des couleurs et des quantités sélectionnées 
+      const selectColors = document.getElementById("colors"); 
+      const selectQty = document.getElementById("quantity"); 
 
+      //Attribution de la couleur  et de la quantité choisie à notre object
+      const optionChoice = Object.assign({}, data, {
+        color : selectColors.value, 
+        quantity : selectQty.value, 
+        });
+        
+      //Récupération des données dans le localstorage
+      let cartArray = JSON.parse(localStorage.getItem("productsInCart")); 
 
- 
+      /*- La condition vient vérifier si un produit est déjà présent ou non dans le localstorage, */ 
+      if (cartArray != null){
+        if(cartArray[data.name] == undefined){
+            cartArray = {
+                ...cartArray,
+                [data.name]: optionChoice
+            }
+            localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+        }
+        } else {
+        cartArray = {
+            [data.name]: optionChoice
+        }
+        localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+        
