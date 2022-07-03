@@ -83,20 +83,24 @@ productAppear();
 
       /*- La condition vient vérifier si un produit est déjà présent ou non dans le localstorage, */ 
       if (cartArray != null){
-        if(cartArray[data.name] == undefined){
-            cartArray = {
-                ...cartArray,
-                [data.name]: optionChoice
+            if(cartArray[data.name] == undefined){
+                cartArray = {
+                    ...cartArray,
+                    [data.name]: optionChoice
+                }
             }
             localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-        }
+
         } else {
         cartArray = {
             [data.name]: optionChoice
         }
         localStorage.setItem("productsInCart", JSON.stringify(cartArray));
         }
+        
     }
 
-    
+  
+
+   
         
