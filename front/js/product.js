@@ -63,6 +63,9 @@ productAppear();
         const button = document.getElementById("addToCart"); 
         button.addEventListener("click", () => {
             cartProducts(data); 
+            totalPrice(data);
+            totalQty(data);
+
     })
     }
 
@@ -97,10 +100,34 @@ productAppear();
         }
         localStorage.setItem("productsInCart", JSON.stringify(cartArray));
         }
+
         
     }
 
-  
+    function totalPrice (data){
+        let cartCost = localStorage.getItem("totalCost"); 
+ 
+        if(cartCost != null){
+            cartCost = parseInt(cartCost);
+            localStorage.setItem("totalCost", cartCost + data.price);
+        } else {
+            localStorage.setItem("totalCost", data.price);
+        }
+        
+    }
+
+    function totalQty(){
+        let cartQty = localStorage.getItem("totalQuantity");
+        cartQty = parseInt(cartQty);
+ 
+        if(cartQty){
+            localStorage.setItem("totalQuantity", cartQty + 1);
+        } else {
+            localStorage.setItem("totalQuantity", 1);
+        } 
+    }
+
+
 
    
         
