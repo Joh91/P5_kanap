@@ -1,10 +1,6 @@
-
-
 //cette fonction va nous permettre d'afficher les produits contenus dans le localstorage dans notre page panier
 function cartAppear() {
     let addCart = JSON.parse(localStorage.getItem("productsInCart"));
-        console.log(addCart)
-    
     let cart__items = document.querySelector("#cart__items"); 
         if (addCart && cart__items) {
            cart__items.innerHTML = "";
@@ -30,11 +26,20 @@ function cartAppear() {
                                             </div>
                                         </article>`
            });
-        }
-      
-    
+        } 
+}
+
+function totalCartAppear() {
+    let totalCart = JSON.parse(localStorage.getItem("totalQuantity"));
+    let totalCost = JSON.parse(localStorage.getItem("totalCost"));
+    let totalQtyCart = document.querySelector(".cart__price");
+
+    if (totalCart && totalCost && totalQtyCart){
+        totalQtyCart.innerHTML = `<p>Total (<span id="totalQuantity">${totalCart}</span> articles) : <span id="totalPrice">${totalCost}</span> €</p>`;
+    }
 }
 
 cartAppear(); 
+totalCartAppear(); 
 
 
