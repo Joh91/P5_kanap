@@ -63,8 +63,8 @@ productAppear();
         const button = document.getElementById("addToCart"); 
         button.addEventListener("click", () => {
             cartProducts(data); 
-            totalPrice(data);
-            totalQty(data);
+            ;
+            
 
     })
     }
@@ -100,33 +100,37 @@ productAppear();
         }
         localStorage.setItem("productsInCart", JSON.stringify(cartArray));
         }
-
-        
+        totalPrice(optionChoice);
+        totalQty(optionChoice);
     }
 
-    function totalPrice (data){
+    function totalPrice (optionChoice){
         let cartCost = localStorage.getItem("totalCost"); 
  
         if(cartCost != null){
             cartCost = parseInt(cartCost);
-            localStorage.setItem("totalCost", cartCost + data.price);
+            localStorage.setItem("totalCost", cartCost + (optionChoice.price * optionChoice.quantity));
         } else {
-            localStorage.setItem("totalCost", data.price);
+            localStorage.setItem("totalCost", optionChoice.price * optionChoice.quantity);
         }
-        
     }
 
-    function totalQty(){
+    function totalQty(optionChoice){
         let cartQty = localStorage.getItem("totalQuantity");
-        cartQty = parseInt(cartQty);
- 
-        if(cartQty){
-            localStorage.setItem("totalQuantity", cartQty + 1);
-        } else {
-            localStorage.setItem("totalQuantity", 1);
-        } 
-    }
+        cartQty = parseInt(cartQty)
+        let selectQty = optionChoice.quantity;
+        selectQty = parseInt(selectQty)
 
+        if(cartQty){
+            localStorage.setItem("totalQuantity", selectQty + cartQty); 
+            console.log("bonsoir")
+        } else {
+            localStorage.setItem("totalQuantity", selectQty); 
+            console.log("hello hello")
+        }
+       
+    
+    }
 
 
    
