@@ -66,6 +66,7 @@ productAppear();
         const button = document.getElementById("addToCart"); 
         button.addEventListener("click", () => {
             cartProducts(dataProducts); 
+            totalCart();
     })
     };
 
@@ -85,104 +86,53 @@ productAppear();
         //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
         if (cartArray == null){
            cartArray = [];
-           cartArray.push(optionChoice);
-            localStorage.setItem("productsInCart", JSON.stringify(cartArray)); 
-        } else if (cartArray != null) {
+           cartArray.push(optionChoice); 
+           localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+        } else if (cartArray != null){
             /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
             sont identique, on incrémente la quantité,-*/
             for (let i = 0; i < cartArray.length; i++){
                 if (cartArray[i]._id == dataProducts._id && cartArray[i].color == optionChoice.color){
-                    return(cartArray[i].quantity += parseInt(selectQty.value), 
-                        localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
+                    return (cartArray[i].quantity += parseInt(selectQty.value),
+                    localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
                 }
             }
 
             /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
-            est identique, mais la couleur différente, on le nouveau produit dans le localStorage cartArray-*/
+            est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage cartArray
+            
+            Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
             for (let i = 0; i < cartArray.length; i++){
-                if (cartArray[i]._id == dataProducts._id && cartArray[i].color != optionChoice.color){
-                    return (console.log("bonjour"),
-                    cartArray.push(optionChoice),
+                if (cartArray[i]._id == dataProducts._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != dataProducts._id ){
+                    return (cartArray.push(optionChoice), 
                     localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
                 }
-            }
-        }
-        
-        // return (cartArray = JSON.parse(localStorage.getItem("productsInCart"))); 
-        
-        
-        
-        
-        
-        // else { 
-        //         if (cartArray._id == data._id && cartArray.color == optionChoice.color){
-                
-        //         console.log("hello")
-                
-                
-                
-        //             //    let newCartArray = cartArray.concat(cartArrayPlus);
-        //         //    console.log(newCartArray);
-        //            localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-        //         }
-        //     }
-            
-        
+            } 
+        }    
+        localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+    }
 
+    //Définition du nombre d'articles et du coût total du panier
+        function totalCart(){
+            let CartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
+            let totalCartQty = 0;
+            let totalCartPrice = 0; 
       
+            //la boucle récupère les quantités et les prix de tous les articles enregistrés dans le localstorage
+            for (let i = 0; i < CartRegistered.length; i++){
 
+                totalCartQty += CartRegistered[i].quantity;
+                console.log("TCQ", totalCartQty);
+                localStorage.setItem("totalQuantity", JSON.stringify(totalCartQty));
 
+                totalCartPrice += (CartRegistered[i].quantity * CartRegistered[i].price);
+                console.log("TCP", totalCartPrice);
+                localStorage.setItem("totalPrice", JSON.stringify(totalCartPrice))
+            }
+            
+    }
 
-
-      //Récupération des données dans le localstorage
-    //   let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
-    //   console.log(cartArray)
-    //   /*- La condition vient vérifier si un produit est déjà présent ou non dans le localstorage,
-    //   Si un produit est présent : ----;
-    //   Sinon on enregistre directement notre tab dans le localstorage */ 
-    //   if (cartArray != null){
-    //         // if(cartArray[data.name] == undefined){
-    //         //     cartArray = {
-    //         //         ...cartArray,
-    //         //         [data.name]: optionChoice}
-    //         // }
-    //         localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-
-    //     } else {
-    //     cartArray = {
-    //         [data.name]: optionChoice
-    //     }
-    //     localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-    //     }
-
-        totalPrice(optionChoice);
-        totalQty(optionChoice);
-    };
-
-    function totalPrice (optionChoice){
-        let cartCost = localStorage.getItem("totalCost"); 
- 
-        if(cartCost != null){
-            cartCost = parseInt(cartCost);
-            localStorage.setItem("totalCost", cartCost + (optionChoice.price * optionChoice.quantity));
-        } else {
-            localStorage.setItem("totalCost", optionChoice.price * optionChoice.quantity);
-        }
-    };
-
-    function totalQty(optionChoice){
-        let cartQty = localStorage.getItem("totalQuantity");
-        cartQty = parseInt(cartQty)
-        let selectQty = optionChoice.quantity;
-        selectQty = parseInt(selectQty)
-
-        if(cartQty){
-            localStorage.setItem("totalQuantity", selectQty + cartQty); 
-        } else {
-            localStorage.setItem("totalQuantity", selectQty); 
-        }
-    };
-
+   
 
    
         
