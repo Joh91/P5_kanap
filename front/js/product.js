@@ -59,78 +59,63 @@ fetch(`http://localhost:3000/api/products/${newId}`)
 productAppear(); 
 
 
-
 //----------------------Gestion du panier ----------------
 // La fonction récupère l'id du bouton pour créer un évènement 
-    function getButton(dataProducts) {
-        const button = document.getElementById("addToCart"); 
-        button.addEventListener("click", () => {
-            cartProducts(dataProducts); 
-            totalCart();
-    })
-    };
+function getButton(dataProducts) {
+    const button = document.getElementById("addToCart"); 
+    button.addEventListener("click", () => {
+        cartProducts(dataProducts); 
+})
+};
 
-    //La fonction va récupérer les valeurs enregistrées dans le local storage et les enregistrer sous forme de tableau 
-    function cartProducts(dataProducts) {
-      // Récupérationdes couleurs et des quantités sélectionnées que l'on va lier avec les données produit dans la variable optionChoice
-      const selectColors = document.getElementById("colors"); 
-      const selectQty = document.getElementById("quantity"); 
-      const optionChoice = Object.assign({}, dataProducts, {
-        color : selectColors.value, 
-        quantity : parseInt(selectQty.value), 
-        });
+//La fonction va récupérer les valeurs enregistrées dans le local storage et les enregistrer sous forme de tableau 
+function cartProducts(dataProducts) {
+    // Récupérationdes couleurs et des quantités sélectionnées que l'on va lier avec les données produit dans la variable optionChoice
+    const selectColors = document.getElementById("colors"); 
+    const selectQty = document.getElementById("quantity"); 
+    const optionChoice = Object.assign({}, dataProducts, {
+      color : selectColors.value, 
+      quantity : parseInt(selectQty.value), 
+      });
 
 
-        let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
-        //On vérifie si le localstorage détient déjà un élément
-        //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
-        if (cartArray == null){
-           cartArray = [];
-           cartArray.push(optionChoice); 
-           localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-        } else if (cartArray != null){
-            /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
-            sont identique, on incrémente la quantité,-*/
-            for (let i = 0; i < cartArray.length; i++){
-                if (cartArray[i]._id == dataProducts._id && cartArray[i].color == optionChoice.color){
-                    return (cartArray[i].quantity += parseInt(selectQty.value),
-                    localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
-                }
-            }
+      let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
+      //On vérifie si le localstorage détient déjà un élément
+      //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
+      if (cartArray == null){
+         cartArray = [];
+         cartArray.push(optionChoice); 
+         localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+      } else if (cartArray != null){
+          /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
+          sont identique, on incrémente la quantité,-*/
+          for (let i = 0; i < cartArray.length; i++){
+              if (cartArray[i]._id == dataProducts._id && cartArray[i].color == optionChoice.color){
+                  return (cartArray[i].quantity += parseInt(selectQty.value),
+                  localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
+              }
+          }
 
-            /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
-            est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage cartArray
-            
-            Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
-            for (let i = 0; i < cartArray.length; i++){
-                if (cartArray[i]._id == dataProducts._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != dataProducts._id ){
-                    return (cartArray.push(optionChoice), 
-                    localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
-                }
-            } 
-        }    
-        localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-    }
+          /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
+          est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage cartArray
+          
+          Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
+          for (let i = 0; i < cartArray.length; i++){
+              if (cartArray[i]._id == dataProducts._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != dataProducts._id ){
+                  return (cartArray.push(optionChoice), 
+                  localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
+              }
+          } 
+      }    
+      localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+  }
 
-    //Définition du nombre d'articles et du coût total du panier
-        function totalCart(){
-            let CartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
-            let totalCartQty = 0;
-            let totalCartPrice = 0; 
-      
-            //la boucle récupère les quantités et les prix de tous les articles enregistrés dans le localstorage
-            for (let i = 0; i < CartRegistered.length; i++){
 
-                totalCartQty += CartRegistered[i].quantity;
-                console.log("TCQ", totalCartQty);
-                localStorage.setItem("totalQuantity", JSON.stringify(totalCartQty));
 
-                totalCartPrice += (CartRegistered[i].quantity * CartRegistered[i].price);
-                console.log("TCP", totalCartPrice);
-                localStorage.setItem("totalPrice", JSON.stringify(totalCartPrice))
-            }
-            
-    }
+
+    
+
+    
 
    
 
