@@ -140,7 +140,7 @@ let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail;
 firstName.addEventListener("change", (firstName) => {
    //si la valeur saisie répond aux critères
    //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
-   if (firstName.target.value.match(/^[a-z A-Z \s'-]{3,25}$/)){
+   if (firstName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
     document.querySelector("#firstNameErrorMsg")
     .innerHTML = "";
     document.querySelector("#firstName")
@@ -169,7 +169,7 @@ firstName.addEventListener("change", (firstName) => {
 lastName.addEventListener("change", (lastName) => {
     //si la valeur saisie répond aux critères
     //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
-    if (lastName.target.value.match(/^[a-z A-Z \s'-]{3,25}$/)){
+    if (lastName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
      document.querySelector("#lastNameErrorMsg")
      .innerHTML = "";
      document.querySelector("#lastName")
@@ -199,7 +199,7 @@ lastName.addEventListener("change", (lastName) => {
 address.addEventListener("change", (address) => {
     //si la valeur saisie répond aux critères
     //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-    if (address.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)){
+    if (address.target.value.match(/^[0-9]{1,3} [/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s]{3,35}$/)){
      document.querySelector("#addressErrorMsg")
      .innerHTML = "";
      document.querySelector("#address")
@@ -228,7 +228,7 @@ address.addEventListener("change", (address) => {
 city.addEventListener("change", (city) => {
     //si la valeur saisie répond aux critères
     //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-    if (city.target.value.match(/^[a-z A-Z \s'-]{3,25}$/)){
+    if (city.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
      document.querySelector("#cityErrorMsg")
      .innerHTML = "";
      document.querySelector("#city")
