@@ -124,3 +124,159 @@ function deleteItem(){
         });
     });
 }
+
+/*------------------------Gestion du formulaire --------------------*/ 
+//on déclare des variables pour chaque input afin de les récupérer 
+const firstName = document.querySelector("#firstName");
+const lastName = document.querySelector("#lastName");
+const address = document.querySelector("#address");
+const city = document.querySelector("#city");
+const email = document.querySelector("#email");
+
+let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail; 
+
+/* --- verification du prénom ---*/
+
+firstName.addEventListener("change", (firstName) => {
+   //si la valeur saisie répond aux critères
+   //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
+   if (firstName.target.value.match(/^[a-z A-Z \s'-]{3,25}$/)){
+    document.querySelector("#firstNameErrorMsg")
+    .innerHTML = "";
+    document.querySelector("#firstName")
+    .style.border = ""
+
+    valueFirstName = firstName.target.value;
+    console.log(valueFirstName);
+   } 
+   //sinon envoi d'un message d'erreur
+   else {
+    //personnalisation du message d'erreur
+    document.querySelector("#firstNameErrorMsg")
+    .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
+    document.querySelector("#firstNameErrorMsg")
+    .style.color = "#fff";
+    document.querySelector("#firstName")
+    .style.border = "solid 2px red"
+
+    valueFirstName = null;
+    console.log(valueFirstName);
+   }
+});
+
+/* --- verification du nom ---*/
+
+lastName.addEventListener("change", (lastName) => {
+    //si la valeur saisie répond aux critères
+    //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
+    if (lastName.target.value.match(/^[a-z A-Z \s'-]{3,25}$/)){
+     document.querySelector("#lastNameErrorMsg")
+     .innerHTML = "";
+     document.querySelector("#lastName")
+     .style.border = "";
+ 
+     valueLastName = lastName.target.value;
+     console.log(valueLastName);
+    } 
+    //sinon envoi d'un message d'erreur
+    else {
+     //personnalisation du message d'erreur
+     document.querySelector("#lastNameErrorMsg")
+     .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
+     document.querySelector("#lastNameErrorMsg")
+     .style.color = "#fff";
+     document.querySelector("#lastName")
+     .style.border = "solid 2px red"
+ 
+     valueLastName = null;
+     console.log(valueLastName);
+    }
+ });
+
+
+ /* --- verification de l'adresse  ---*/
+
+address.addEventListener("change", (address) => {
+    //si la valeur saisie répond aux critères
+    //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+    if (address.target.value.match(/^[0-9]{1,3} [a-z A-Z]{3,35}$/)){
+     document.querySelector("#addressErrorMsg")
+     .innerHTML = "";
+     document.querySelector("#address")
+     .style.border = ""
+ 
+     valueAddress = address.target.value;
+     console.log(valueAddress);
+    } 
+    //sinon envoi d'un message d'erreur
+    else {
+     //personnalisation du message d'erreur
+     document.querySelector("#addressErrorMsg")
+     .innerHTML = "L'adresse comporte au moins un numéro suivi du nom de voie ";
+     document.querySelector("#addressErrorMsg")
+     .style.color = "#fff";
+     document.querySelector("#address")
+     .style.border = "solid 2px red"
+ 
+     valueAddress = null;
+     console.log(valueAddress);
+    }
+ });
+
+/* --- verification de la ville  ---*/
+
+city.addEventListener("change", (city) => {
+    //si la valeur saisie répond aux critères
+    //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+    if (city.target.value.match(/^[a-z A-Z \s'-]{3,25}$/)){
+     document.querySelector("#cityErrorMsg")
+     .innerHTML = "";
+     document.querySelector("#city")
+     .style.border = ""
+ 
+     valueCity = city.target.value;
+     console.log(valueCity);
+    } 
+    //sinon envoi d'un message d'erreur
+    else {
+     //personnalisation du message d'erreur
+     document.querySelector("#cityErrorMsg")
+     .innerHTML = "Le nom de la commune doit contenir 3 lettres minimum et ne pas contenir de chiffre";
+     document.querySelector("#cityErrorMsg")
+     .style.color = "#fff";
+     document.querySelector("#city")
+     .style.border = "solid 2px red"
+ 
+     valueCity = null;
+     console.log(valueCity);
+    }
+ });
+
+ /* --- verification de l'Email  ---*/
+
+email.addEventListener("change", (email) => {
+    //si la valeur saisie répond aux critères
+    //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+    if (email.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)){
+     document.querySelector("#emailErrorMsg")
+     .innerHTML = "";
+     document.querySelector("#email")
+     .style.border = "";
+ 
+     valueEmail = email.target.value;
+     console.log(valueEmail);
+    } 
+    //sinon envoi d'un message d'erreur
+    else {
+     //personnalisation du message d'erreur
+     document.querySelector("#emailErrorMsg")
+     .innerHTML = "Email non valide, ex: Kanap@contact.fr";
+     document.querySelector("#emailErrorMsg")
+     .style.color = "#fff";
+     document.querySelector("#email")
+     .style.border = "solid 2px red"
+ 
+     valueEmail = null;
+     console.log(valueEmail);
+    }
+ });
