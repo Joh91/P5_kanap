@@ -36,7 +36,6 @@ function productsAppear() {
 
         console.log("erreur")
     });
-    
 };
 
 //declaration de la fonction productAppear
