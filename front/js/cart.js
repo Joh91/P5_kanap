@@ -280,3 +280,78 @@ email.addEventListener("change", (email) => {
      console.log(valueEmail);
     }
  });
+
+/* -------------- Confirmation de commande -----------------*/ 
+ //recupération du submit et création de l'évènement 
+ const formContact = document.querySelector("#order");
+ formContact.addEventListener("click", (e) => {
+    e.preventDefault(); 
+
+    //si value[input] est différent de null 
+    if(valueFirstName && valueLastName && valueAddress && valueCity && valueEmail){
+
+        /*---création de l'array ID-produit---*/ 
+
+        let orderItems = JSON.parse(localStorage.getItem("productsInCart"));
+        let orderId = []; 
+        //on injecte chaque produits du localstorage dans l'array orderId 
+        orderItems.forEach((items) => {
+            orderId.push(items._id);
+        });
+        console.log(orderId);
+
+        /*----création de l'object contact + array----*/ 
+        const orderFinal = {
+            contact: {
+            firstName: valueFirstName,
+            lastName: valueLastName,
+            address: valueAddress,
+            city: valueCity,
+            email: valueEmail, 
+            },
+            products: orderId, 
+        };
+        console.log(orderFinal);
+        sendOrder(orderFinal);
+
+    } else {
+        alert("Veuillez compléter le formulaire intégralement");
+    }
+ });
+ 
+function sendOrder (orderFinal){
+    if (orderFinal) {
+        fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            headers : {
+                "Accept": "application/json",
+                "Content-type": "application/json"
+            },
+
+            body: JSON.stringify(orderFinal)
+        })
+        .then((res) => {
+            if (res.ok){
+                return res.json();
+            }
+        })
+        .then((data) => {
+            //l'order-ID se trouve désormais dans data
+            console.log(data);
+            //modification de l'url afin d'envoyer la réponse à notre page confirmation
+            window.location.href = `./confirmation.html?orderId=${data.orderId}`;
+            console.log(window.location.href)
+        })
+        .catch((err) => {
+            console.log("erreur");
+            alert("Une erreur est survenue, veuillez réessayer")
+        })
+    }
+}
+
+
+
+
+
+
+
