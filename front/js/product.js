@@ -1,11 +1,21 @@
-//Récupération de l'Id dans notre URL    
-const urlProduct = window.location.search;
-const urlParams = new URLSearchParams(urlProduct);
-const newId = urlParams.get("id"); 
-let dataProducts = []; 
+/* -- Récupération de l'Id dans notre URL --*/ 
+function getId (){//met en avant le parametre de notre url    
+    const urlProduct = window.location.search;
+    // récupération de la valeur du parametre 
+    const urlParams = new URLSearchParams(urlProduct);
+    const newId = urlParams.get("id"); 
+
+    //Declaration de la fonction productAppear dans getID afin de récupérer la valeur de newID
+    productAppear(newId); 
+}
+
+//déclaration de getId()
+getId();
+    
+
 
 //Affichage des produits dans leur page produit
-function productAppear() {
+function productAppear(newId) {
 //Intégration de l'id par produit dans notre URL afin de les distinguer dans leur page respective
 fetch(`http://localhost:3000/api/products/${newId}`)
 
@@ -17,9 +27,7 @@ fetch(`http://localhost:3000/api/products/${newId}`)
     })
 
     //Affichage dynamique des éléments de la page produit
-    .then((promise) => {
-        dataProducts = promise;
-
+    .then((dataProducts) => {
         document
         .querySelector(".item__img")
         .innerHTML = `<img src="${dataProducts.imageUrl}" alt="Photographie d'un canapé"></img>`
@@ -55,8 +63,8 @@ fetch(`http://localhost:3000/api/products/${newId}`)
     
 };
 
-//Declaration de la fonction productAppear
-productAppear(); 
+
+
 
 
 //----------------------Gestion du panier ----------------
