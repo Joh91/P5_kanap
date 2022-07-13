@@ -1,10 +1,10 @@
-//cette fonction va nous permettre d'afficher les produits contenus dans le localstorage dans notre page panier
-
+/* -- cette fonction va nous permettre d'afficher les produits contenus dans le localstorage dans notre page panier --*/
 function cartAppear() {
+    //récupération des produits enregistrés dans le localStorage
     let addCart = JSON.parse(localStorage.getItem("productsInCart"));
 
+    //intégration des valeurs dans les éléments HTML de la page; Map permet d'itérer 
     let cart__items = document.querySelector("#cart__items");
-
     cart__items.innerHTML = addCart.map((item) => `<article class="cart__item" data-id="${item._id}" data-color="${item.colors}">
                                                         <div class="cart__item__img">
                                                             <img src="${item.imageUrl}" alt="${item.altTxt}">
@@ -24,16 +24,18 @@ function cartAppear() {
                                                                 <p class="deleteItem" data-id="${item._id}" data-color="${item.color}">Supprimer</p>
                                                             </div>
                                                         </div>
-                                                    </article>`)
-    totalCart(addCart);
-    
+                                                    </article>`);
+    //Déclaration de la fonction totalCart                                               
+    totalCart();
 }
 
+//Déclaration des fonctions 
 cartAppear();
 addQuantity();
 deleteItem();
+FormCheck (); 
 
-//Définition du nombre d'articles et du coût total du panier
+/* --- Définition du nombre d'articles et du coût total du panier --- */ 
 function totalCart() {
     let CartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
     let totalCartQty = 0;
@@ -42,40 +44,44 @@ function totalCart() {
     //la boucle récupère les quantités et les prix de tous les articles enregistrés dans le localstorage
     for (let i = 0; i < CartRegistered.length; i++) {
 
+        //Nouvelle clé/valeur du localStorage -- Comptabilise la quantité totale/ articles et leur quantité ajoutés 
         totalCartQty += CartRegistered[i].quantity;
         console.log("TCQ", totalCartQty);
         localStorage.setItem("totalQuantity", JSON.stringify(totalCartQty));
 
+        //Nouvelle clé/valeur du localStorage -- Comptabilise le coût total/ articles et selon leur quantité ajoutés 
         totalCartPrice += (CartRegistered[i].quantity * CartRegistered[i].price);
         console.log("TCP", totalCartPrice);
         localStorage.setItem("totalPrice", JSON.stringify(totalCartPrice));
-
     }
+    //Déclaration de la fonction TotalCartAppear
     totalCartAppear();
 }
 
 
 function totalCartAppear() {
+    //récupération des valeurs enregistrées dans le localStorage que l'on intègre dans deux nouvelles variables 
     let totalCart = JSON.parse(localStorage.getItem("totalQuantity"));
     let totalCost = JSON.parse(localStorage.getItem("totalPrice"));
-    let totalQtyCart = document.querySelector(".cart__price");
-
-    if (totalCart && totalCost && totalQtyCart) {
-        totalQtyCart.innerHTML = `<p>Total (<span id="totalQuantity">${totalCart}</span> articles) : <span id="totalPrice">${totalCost}</span> €</p>`;
-    }
+    //récupération de la class et intégration des valeurs dans les éléments HTML 
+    let totalQtyCart = document.querySelector(".cart__price")
+    totalQtyCart.innerHTML = `<p>Total (<span id="totalQuantity">${totalCart}</span> articles) : <span id="totalPrice">${totalCost}</span> €</p>`;
 }
 
 function addQuantity() {
+    //récupération des produits enregistrés dans le localstorage
     let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
+    // récupération des inputs et création d'une boucle afin d'itérer la création d'un event pour chacun d'eux 
     const qtyButton = document.querySelectorAll('.itemQuantity');
     qtyButton.forEach((quantity) => {
         quantity.addEventListener("change", (e) => {
 
             for (item of cartRegistered) {
-                console.log(qtyButton);
+                //si l'id et la couleur du produit est égale à celle du dataset de notre input
                 if (item._id == quantity.dataset.id && item.color == quantity.dataset.color) {
                     item.quantity = parseInt(e.target.value);
                     localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
+                    //déclaration de totalCart afin de recompter le résultat après modification 
                     totalCart();
                 }
             }
@@ -91,11 +97,10 @@ function deleteItem(){
     deletedButton.forEach((items) => {
         items.addEventListener("click", () => {
             let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
-            let itemDeleted = cartRegistered.length;
             let newCart = [];
             
             //si le localstorage ne detient que un seul item on supprime celui-ci avec removeItem 
-            if (itemDeleted == 1) {
+            if (cartRegistered.length == 1) {
                 return (
                     localStorage.removeItem("productsInCart"), 
                     console.log("hello"),
@@ -103,20 +108,17 @@ function deleteItem(){
                     window.location.href = "cart.html"
                 );
             } else  {
-                /*-Utilisation de filter pour la suppression du/des item(s)
-
-                *filter récupère les élements selectionner pour les enregistrer dans un nouvel array et par élimination supprimer celles non conservées
-
+                /*-Utilisation de filter pour la suppression des items
                 **on récupère les produits du localstorage; filter récupère les éléments dans l'array et les déclare dans element 
-
-                ***le produit selectionné est donc celui non retenu dans notre nouvel array -*/
+                *** dataset.id et dataset.color permettent de distinguer les bouton supprimer et de créer une comparaison 
+                 */
                 newCart = cartRegistered.filter ((element => {
+                    /* - si l'id et la couleur de l'un des produits du panier est contraire à l'id et/ou 
+                    la couleur rattachés au bouton supprimer on conserve les éléments dans un nouveau tableau - */ 
                  if (element._id != items.dataset.id || element.color != items.dataset.color){
                     return true; 
                     }
                 }));
-                console.log("bonsoir");
-                console.log(cartRegistered);
                 //le nouveau array est sauvegardé dans le localstorage, la page actualisée
                 localStorage.setItem("productsInCart", JSON.stringify(newCart));
                 window.location.href = "cart.html";
@@ -125,209 +127,246 @@ function deleteItem(){
     });
 }
 
+
+
 /*------------------------Gestion du formulaire --------------------*/ 
 //on déclare des variables pour chaque input afin de les récupérer 
-const firstName = document.querySelector("#firstName");
-const lastName = document.querySelector("#lastName");
-const address = document.querySelector("#address");
-const city = document.querySelector("#city");
-const email = document.querySelector("#email");
 
-let valueFirstName, valueLastName, valueAddress, valueCity, valueEmail; 
-
-/* --- verification du prénom ---*/
-
-firstName.addEventListener("change", (firstName) => {
-   //si la valeur saisie répond aux critères
-   //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
-   if (firstName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
-    document.querySelector("#firstNameErrorMsg")
-    .innerHTML = "";
-    document.querySelector("#firstName")
-    .style.border = ""
-
-    valueFirstName = firstName.target.value;
-    console.log(valueFirstName);
-   } 
-   //sinon envoi d'un message d'erreur
-   else {
-    //personnalisation du message d'erreur
-    document.querySelector("#firstNameErrorMsg")
-    .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
-    document.querySelector("#firstNameErrorMsg")
-    .style.color = "#fff";
-    document.querySelector("#firstName")
-    .style.border = "solid 2px red"
-
-    valueFirstName = null;
-    console.log(valueFirstName);
-   }
-});
-
-/* --- verification du nom ---*/
-
-lastName.addEventListener("change", (lastName) => {
-    //si la valeur saisie répond aux critères
-    //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
-    if (lastName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
-     document.querySelector("#lastNameErrorMsg")
-     .innerHTML = "";
-     document.querySelector("#lastName")
-     .style.border = "";
- 
-     valueLastName = lastName.target.value;
-     console.log(valueLastName);
-    } 
-    //sinon envoi d'un message d'erreur
-    else {
-     //personnalisation du message d'erreur
-     document.querySelector("#lastNameErrorMsg")
-     .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
-     document.querySelector("#lastNameErrorMsg")
-     .style.color = "#fff";
-     document.querySelector("#lastName")
-     .style.border = "solid 2px red"
- 
-     valueLastName = null;
-     console.log(valueLastName);
+function FormCheck () {
+    let valueForm = []; 
+    
+    //Déclaration des fonctions
+    firstName(valueForm);
+    lastName(valueForm);
+    address(valueForm);
+    city(valueForm);
+    email(valueForm);
+    //Déclaration de submit dans FormCheck() pour récupérer valueForm 
+    submit(valueForm);
+    
+    /* --- verification du prénom ---*/
+    function firstName (valueForm) {
+        const firstName = document.querySelector("#firstName");
+        firstName.addEventListener("change", (firstName) => {
+            //si la valeur saisie répond aux critères
+            //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
+            if (firstName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
+                document.querySelector("#firstNameErrorMsg")
+                .innerHTML = "";
+                document.querySelector("#firstName")
+                .style.border = ""
+        
+                let valueFirstName = firstName.target.value
+                valueForm.push(valueFirstName);
+                console.log(valueForm);
+                console.log(valueFirstName);
+            } 
+            //sinon envoi d'un message d'erreur
+            else {
+                //personnalisation du message d'erreur
+                document.querySelector("#firstNameErrorMsg")
+                .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
+                document.querySelector("#firstNameErrorMsg")
+                .style.color = "#fff";
+                document.querySelector("#firstName")
+                .style.border = "solid 2px red"
+        
+                let valueFirstName = null;
+                console.log(valueFirstName);
+            }
+            });
     }
- });
-
-
- /* --- verification de l'adresse  ---*/
-
-address.addEventListener("change", (address) => {
-    //si la valeur saisie répond aux critères
-    //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-    if (address.target.value.match(/^[0-9]{1,3} [/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s]{3,35}$/)){
-     document.querySelector("#addressErrorMsg")
-     .innerHTML = "";
-     document.querySelector("#address")
-     .style.border = ""
- 
-     valueAddress = address.target.value;
-     console.log(valueAddress);
-    } 
-    //sinon envoi d'un message d'erreur
-    else {
-     //personnalisation du message d'erreur
-     document.querySelector("#addressErrorMsg")
-     .innerHTML = "L'adresse comporte au moins un numéro suivi du nom de voie ";
-     document.querySelector("#addressErrorMsg")
-     .style.color = "#fff";
-     document.querySelector("#address")
-     .style.border = "solid 2px red"
- 
-     valueAddress = null;
-     console.log(valueAddress);
+   
+    /* --- verification du nom ---*/
+    function lastName (valueForm) {
+        const lastName = document.querySelector("#lastName");
+        lastName.addEventListener("change", (lastName) => {
+            //si la valeur saisie répond aux critères
+            //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
+            if (lastName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
+            document.querySelector("#lastNameErrorMsg")
+            .innerHTML = "";
+            document.querySelector("#lastName")
+            .style.border = "";
+        
+            let valueLastName = lastName.target.value;
+            valueForm.push(valueLastName);
+            console.log(valueLastName);
+            } 
+            //sinon envoi d'un message d'erreur
+            else {
+            //personnalisation du message d'erreur
+            document.querySelector("#lastNameErrorMsg")
+            .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
+            document.querySelector("#lastNameErrorMsg")
+            .style.color = "#fff";
+            document.querySelector("#lastName")
+            .style.border = "solid 2px red"
+        
+            let valueLastName = null;
+            console.log(valueLastName);
+            }
+        });
     }
- });
-
-/* --- verification de la ville  ---*/
-
-city.addEventListener("change", (city) => {
-    //si la valeur saisie répond aux critères
-    //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-    if (city.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
-     document.querySelector("#cityErrorMsg")
-     .innerHTML = "";
-     document.querySelector("#city")
-     .style.border = ""
- 
-     valueCity = city.target.value;
-     console.log(valueCity);
-    } 
-    //sinon envoi d'un message d'erreur
-    else {
-     //personnalisation du message d'erreur
-     document.querySelector("#cityErrorMsg")
-     .innerHTML = "Le nom de la commune doit contenir 3 lettres minimum et ne pas contenir de chiffre";
-     document.querySelector("#cityErrorMsg")
-     .style.color = "#fff";
-     document.querySelector("#city")
-     .style.border = "solid 2px red"
- 
-     valueCity = null;
-     console.log(valueCity);
+    
+    /* --- verification de l'adresse  ---*/
+    function address (valueForm){
+        const address = document.querySelector("#address");
+        address.addEventListener("change", (address) => {
+            //si la valeur saisie répond aux critères
+            //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+            if (address.target.value.match(/^[0-9]{1,3} [/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s]{3,35}$/)){
+            document.querySelector("#addressErrorMsg")
+            .innerHTML = "";
+            document.querySelector("#address")
+            .style.border = ""
+        
+            let valueAddress = address.target.value;
+            valueForm.push(valueAddress);
+            console.log(valueAddress);
+            } 
+            //sinon envoi d'un message d'erreur
+            else {
+            //personnalisation du message d'erreur
+            document.querySelector("#addressErrorMsg")
+            .innerHTML = "L'adresse comporte au moins un numéro suivi du nom de voie ";
+            document.querySelector("#addressErrorMsg")
+            .style.color = "#fff";
+            document.querySelector("#address")
+            .style.border = "solid 2px red"
+        
+            let valueAddress = null;
+            console.log(valueAddress);
+            }
+        });
     }
- });
-
- /* --- verification de l'Email  ---*/
-
-email.addEventListener("change", (email) => {
-    //si la valeur saisie répond aux critères
-    //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-    if (email.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)){
-     document.querySelector("#emailErrorMsg")
-     .innerHTML = "";
-     document.querySelector("#email")
-     .style.border = "";
- 
-     valueEmail = email.target.value;
-     console.log(valueEmail);
-    } 
-    //sinon envoi d'un message d'erreur
-    else {
-     //personnalisation du message d'erreur
-     document.querySelector("#emailErrorMsg")
-     .innerHTML = "Email non valide, ex: Kanap@contact.fr";
-     document.querySelector("#emailErrorMsg")
-     .style.color = "#fff";
-     document.querySelector("#email")
-     .style.border = "solid 2px red"
- 
-     valueEmail = null;
-     console.log(valueEmail);
+    
+    /* --- verification de la ville  ---*/
+    function city (valueForm) {
+        const city = document.querySelector("#city");
+        city.addEventListener("change", (city) => {
+            //si la valeur saisie répond aux critères
+            //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+            if (city.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)){
+            document.querySelector("#cityErrorMsg")
+            .innerHTML = "";
+            document.querySelector("#city")
+            .style.border = ""
+        
+            let valueCity = city.target.value;
+            valueForm.push(valueCity);
+            console.log(valueCity);
+            } 
+            //sinon envoi d'un message d'erreur
+            else {
+            //personnalisation du message d'erreur
+            document.querySelector("#cityErrorMsg")
+            .innerHTML = "Le nom de la commune doit contenir 3 lettres minimum et ne pas contenir de chiffre";
+            document.querySelector("#cityErrorMsg")
+            .style.color = "#fff";
+            document.querySelector("#city")
+            .style.border = "solid 2px red"
+        
+            let valueCity = null;
+            console.log(valueCity);
+            }
+        });
     }
- });
+    
+    /* --- verification de l'Email  ---*/
+    function email (valueForm){
+        const email = document.querySelector("#email");
+        email.addEventListener("change", (email) => {
+            //si la valeur saisie répond aux critères
+            //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+            if (email.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)){
+            document.querySelector("#emailErrorMsg")
+            .innerHTML = "";
+            document.querySelector("#email")
+            .style.border = "";
+        
+            let valueEmail = email.target.value;
+            valueForm.push(valueEmail);
+            console.log(valueEmail);
+            } 
+            //sinon envoi d'un message d'erreur
+            else {
+            //personnalisation du message d'erreur
+            document.querySelector("#emailErrorMsg")
+            .innerHTML = "Email non valide, ex: Kanap@contact.fr";
+            document.querySelector("#emailErrorMsg")
+            .style.color = "#fff";
+            document.querySelector("#email")
+            .style.border = "solid 2px red"
+        
+            let valueEmail = null;
+            console.log(valueEmail);
+            }
+        });
+    } 
+}
 
 /* -------------- Confirmation de commande -----------------*/ 
  //recupération du submit et création de l'évènement 
- const formContact = document.querySelector("#order");
- formContact.addEventListener("click", (e) => {
-    e.preventDefault(); 
+ function submit(valueForm){
+    //récupération de l'id du bouton commander
+    const formContact = document.querySelector("#order");
+    //création d'un évènement
+    formContact.addEventListener("click", (e) => {
+        // e.preventDefault(); 
+        console.log(valueForm); 
 
-    //si value[input] est différent de null 
-    if(valueFirstName && valueLastName && valueAddress && valueCity && valueEmail){
+        //si les valeurs retournées pour chaque input sont différentes de null et intégrées dans valueForm[]
+        if(valueForm){
+            /* 1 * ----- récupération des valeurs dans valueForm [], insertion de celles-ci dans des variables -----*/
+            let valueFirstName = valueForm[0];
+            let valueLastName = valueForm[1];
+            let valueAddress = valueForm[2];
+            let valueCity = valueForm[3];
+            let valueEmail = valueForm[4]; 
+            console.log("ValueForm[n]", valueFirstName)
 
-        /*---création de l'array ID-produit---*/ 
+            /* 2 * ---création de l'array ID-produit---*/ 
+            let orderItems = JSON.parse(localStorage.getItem("productsInCart"));
+            let orderId = []; 
+            //on injecte chaque id-produits du localstorage dans l'array orderId 
+            orderItems.forEach((items) => {
+                orderId.push(items._id);
+            });
 
-        let orderItems = JSON.parse(localStorage.getItem("productsInCart"));
-        let orderId = []; 
-        //on injecte chaque produits du localstorage dans l'array orderId 
-        orderItems.forEach((items) => {
-            orderId.push(items._id);
-        });
-        console.log(orderId);
+            /* 3 * ----création de l'object contact + array----*/ 
+            const orderFinal = {
+                contact: {
+                firstName: valueFirstName,
+                lastName: valueLastName,
+                address: valueAddress,
+                city: valueCity,
+                email: valueEmail, 
+                },
+                products: orderId, 
+            };
+            console.log(orderFinal);
 
-        /*----création de l'object contact + array----*/ 
-        const orderFinal = {
-            contact: {
-            firstName: valueFirstName,
-            lastName: valueLastName,
-            address: valueAddress,
-            city: valueCity,
-            email: valueEmail, 
-            },
-            products: orderId, 
-        };
-        console.log(orderFinal);
-        sendOrder(orderFinal);
+            //Déclaration de la fonction sendOrder()
+            sendOrder(orderFinal);
 
-    } else {
-        alert("Veuillez compléter le formulaire intégralement");
-    }
- });
+        } else {
+            alert("Veuillez compléter le formulaire intégralement");
+        }
+    });
+ }
+ 
  
 function sendOrder (orderFinal){
+    //Si orderFinal (object contact + tableau id-produit) est true 
     if (orderFinal) {
+        //Envoi des informations et demande à l'API de retourner l'order-id 
         fetch("http://localhost:3000/api/products/order", {
             method: "POST",
             headers : {
                 "Accept": "application/json",
                 "Content-type": "application/json"
             },
-
             body: JSON.stringify(orderFinal)
         })
         .then((res) => {
