@@ -48,7 +48,7 @@ fetch(`http://localhost:3000/api/products/${newId}`)
        
        /*--Déclaration de la fonction getButton qui prend pour parametre "dataProducts", qui sera nécessaire à 
        l'importation des données dans le localstorage --*/
-        getButton(dataProducts); 
+       getButton(dataProducts);
     })
     
     //Active dans le cas où notre première promesse est "false"
@@ -61,74 +61,58 @@ fetch(`http://localhost:3000/api/products/${newId}`)
     });   
 };
 
-
 //----------------------Gestion du panier ----------------
 // La fonction récupère l'id du bouton pour créer un évènement 
-function getButton(dataProducts) {
+function getButton(dataProducts){
     const button = document.getElementById("addToCart"); 
     button.addEventListener("click", () => {
-        cartProducts(dataProducts); 
+        productsSelection(dataProducts); 
 })
 };
 
-//La fonction va récupérer les valeurs enregistrées dans le local storage et les enregistrer sous forme de tableau 
-function cartProducts(dataProducts) {
-    // Récupération des couleurs et des quantités sélectionnées que l'on va lier avec les données produit dans la variable optionChoice
-    function productsSelection (dataProducts){
-        const selectColors = document.getElementById("colors"); 
-        const selectQty = document.getElementById("quantity"); 
-        const optionChoice = Object.assign({}, dataProducts, {
-        color : selectColors.value, 
-        quantity : parseInt(selectQty.value), 
-        });
+// Récupération des couleurs et des quantités sélectionnées que l'on va lier avec les données produit dans la variable optionChoice
+function productsSelection(dataProducts){
+    const selectColors = document.getElementById("colors"); 
+    const selectQty = document.getElementById("quantity"); 
+    const optionChoice =  {
+    name : dataProducts.name,
+    id_ : dataProducts._id,
+    color : selectColors.value, 
+    quantity : parseInt(selectQty.value), 
+    };
+    console.log(optionChoice); 
 
-        //Déclaration d'inToLocalStorage dans la fonction pour récupérer la valeur optionChoice
-        inToLocalStorage(optionChoice);
-    }
-
-    function inToLocalStorage (optionChoice){
-      let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
-      //On vérifie si le localstorage détient déjà un élément
-      //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
-      if (cartArray == null){
-         cartArray = [];
-         cartArray.push(optionChoice); 
-         localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-      } else if (cartArray != null){
-          /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
-          sont identique, on incrémente la quantité,-*/
-          for (let i = 0; i < cartArray.length; i++){
-              if (cartArray[i]._id == dataProducts._id && cartArray[i].color == optionChoice.color){
-                  return (cartArray[i].quantity += parseInt(optionChoice.quantity),
-                  localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
-              }
-          }
-
-          /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
-          est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage 
-          
-          Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
-          for (let i = 0; i < cartArray.length; i++){
-              if (cartArray[i]._id == dataProducts._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != dataProducts._id ){
-                  return (cartArray.push(optionChoice), 
-                  localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
-              }
-          } 
-      }    
-    }
-    
-    //Déclaration de la fonction
-    productsSelection(dataProducts);
+    //Déclaration d'inToLocalStorage dans la fonction pour récupérer la valeur optionChoice
+    inToLocalStorage(optionChoice);
 }
 
+function inToLocalStorage(optionChoice){
+    let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
+    //On vérifie si le localstorage détient déjà un élément
+    //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
+    if (cartArray == null){
+        cartArray = [];
+        cartArray.push(optionChoice); 
+        localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+    } else if (cartArray != null){
+        /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
+        sont identique, on incrémente la quantité,-*/
+        for (let i = 0; i < cartArray.length; i++){
+            if (cartArray[i]._id == optionChoice._id && cartArray[i].color == optionChoice.color){
+                return (cartArray[i].quantity += parseInt(optionChoice.quantity),
+                localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
+            }
+        }
 
-
-
-    
-
-    
-
-   
-
-   
+        /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
+        est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage 
         
+        Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
+        for (let i = 0; i < cartArray.length; i++){
+            if (cartArray[i]._id == optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != dataProducts._id ){
+                return (cartArray.push(optionChoice), 
+                localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
+            }
+        } 
+    }    
+}
