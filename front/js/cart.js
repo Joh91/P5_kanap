@@ -1,33 +1,49 @@
 /* -- cette fonction va nous permettre d'afficher les produits contenus dans le localstorage dans notre page panier --*/
-function cartAppear() {
+function cartAppear(){
     //récupération des produits enregistrés dans le localStorage
     let addCart = JSON.parse(localStorage.getItem("productsInCart"));
+    console.log("test", addCart._id);
 
-    //intégration des valeurs dans les éléments HTML de la page; Map permet d'itérer 
-    let cart__items = document.querySelector("#cart__items");
-    cart__items.innerHTML = addCart.map((item) => `<article class="cart__item" data-id="${item._id}" data-color="${item.colors}">
-                                                        <div class="cart__item__img">
-                                                            <img src="${item.imageUrl}" alt="${item.altTxt}">
-                                                        </div>
-                                                        <div class="cart__item__content">
-                                                        <div class="cart__item__content__description">
-                                                            <h2>${item.name}</h2>
-                                                            <p>${item.color}</p>
-                                                            <p>${item.price} €</p>
-                                                        </div>
-                                                        <div class="cart__item__content__settings">
-                                                            <div class="cart__item__content__settings__quantity">
-                                                                <p>Qté : ${item.quantity} </p>
-                                                                <input type="number" data-id="${item._id}" data-color="${item.color}" class="itemQuantity" name="itemQuantity" min="1" max="100" value="1">
-                                                            </div>
-                                                            <div class="cart__item__content__settings__delete">
-                                                                <p class="deleteItem" data-id="${item._id}" data-color="${item.color}">Supprimer</p>
-                                                            </div>
-                                                        </div>
-                                                    </article>`);
-    //Déclaration de la fonction totalCart                                               
+    for(let i = 0; i < addCart.length; i++){
+        fetch(`http://localhost:3000/api/products/${addCart[i]._id}`)
+        .then((res) => {
+            return res.json();
+        })
+        
+        .then((data) => {  
+            console.log("data", data)
+            let price = data.price; 
+            let cart__items = document.querySelector("#cart__items");
+            cart__items.innerHTML += `<article class="cart__item" data-id="${addCart[i]._id}" data-color="${addCart[i].colors}">
+                                                                <div class="cart__item__img">
+                                                                    <img src="${data.imageUrl}" alt="${data.txtAlt}">
+                                                                </div>
+                                                                <div class="cart__item__content">
+                                                                <div class="cart__item__content__description">
+                                                                    <h2>${addCart[i].name}</h2>
+                                                                    <p>${addCart[i].color}</p>
+                                                                    <p>${data.price}€</p>
+                                                                </div>
+                                                                <div class="cart__item__content__settings">
+                                                                    <div class="cart__item__content__settings__quantity">
+                                                                        <p>Qté : ${addCart[i].quantity} </p>
+                                                                        <input type="number" data-id="${addCart[i]._id}" data-color="${addCart[i].color}" class="itemQuantity" name="itemQuantity" min="1" max="100" value="1">
+                                                                    </div>
+                                                                    <div class="cart__item__content__settings__delete">
+                                                                        <p class="deleteItem" data-id="${addCart[i]._id}" data-color="${addCart[i].color}">Supprimer</p>
+                                                                    </div>
+                                                                </div>
+                                                            </article>`;
+        });
+        
+        
+        };
+    
+    //Déclaration de la fonction totalCart                                                
     totalCart();
 }
+
+
 
 //Déclaration des fonctions 
 cartAppear();
@@ -71,14 +87,17 @@ function totalCartAppear() {
 function addQuantity() {
     //récupération des produits enregistrés dans le localstorage
     let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
+    console.log("qté", cartRegistered);
     // récupération des inputs et création d'une boucle afin d'itérer la création d'un event pour chacun d'eux 
     const qtyButton = document.querySelectorAll('.itemQuantity');
     qtyButton.forEach((quantity) => {
         quantity.addEventListener("change", (e) => {
-
+//  diviser en deux fonctions 
             for (item of cartRegistered) {
+                console.log("test0", item); 
                 //si l'id et la couleur du produit est égale à celle du dataset de notre input
                 if (item._id == quantity.dataset.id && item.color == quantity.dataset.color) {
+                    // console.log("test", item.quantity); 
                     item.quantity = parseInt(e.target.value);
                     localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
                     //déclaration de totalCart afin de recompter le résultat après modification 
