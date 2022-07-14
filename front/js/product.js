@@ -76,7 +76,7 @@ function productsSelection(dataProducts){
     const selectQty = document.getElementById("quantity"); 
     const optionChoice =  {
     name : dataProducts.name,
-    id_ : dataProducts._id,
+    _id : dataProducts._id,
     color : selectColors.value, 
     quantity : parseInt(selectQty.value), 
     };
@@ -109,7 +109,7 @@ function inToLocalStorage(optionChoice){
         
         Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
         for (let i = 0; i < cartArray.length; i++){
-            if (cartArray[i]._id == optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != dataProducts._id ){
+            if (cartArray[i]._id == optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != optionChoice._id ){
                 return (cartArray.push(optionChoice), 
                 localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
             }
