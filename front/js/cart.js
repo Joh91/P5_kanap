@@ -2,7 +2,6 @@
 function cartAppear(){
     //récupération des produits enregistrés dans le localStorage
     let addCart = JSON.parse(localStorage.getItem("productsInCart"));
-    console.log("test", addCart._id);
 
     for(let i = 0; i < addCart.length; i++){
         fetch(`http://localhost:3000/api/products/${addCart[i]._id}`)
@@ -10,9 +9,8 @@ function cartAppear(){
             return res.json();
         })
         
-        .then((data) => {  
-            console.log("data", data)
-            let price = data.price; 
+        .then((data) => { 
+            let price = data.price;
             let cart__items = document.querySelector("#cart__items");
             cart__items.innerHTML += `<article class="cart__item" data-id="${addCart[i]._id}" data-color="${addCart[i].colors}">
                                                                 <div class="cart__item__img">
@@ -34,39 +32,57 @@ function cartAppear(){
                                                                     </div>
                                                                 </div>
                                                             </article>`;
-        });
-        
-        
-        };
+        })
     
-    //Déclaration de la fonction totalCart                                                
-    totalCart();
+            .catch ((err) => {
+            document
+            .querySelector(".cart")
+            .innerText += "Nous ne sommes pas parvenu à afficher les éléments attendus, veuillez-vous excuser"; 
+    
+            console.log("erreur")
+        });  
+    }   
 }
-
-
 
 //Déclaration des fonctions 
 cartAppear();
+getPriceItem(); 
 addQuantity();
 deleteItem();
 FormCheck (); 
 
+function getPriceItem(){
+    fetch(`http://localhost:3000/api/products`)
+    .then((res) => {
+        return res.json();
+    })
+    
+    .then((data) => { 
+        for (i = 0; i < data.length; i++){
+            let price = data[i].price;
+            totalCart(price);
+        }
+    })
+}
+
+
 /* --- Définition du nombre d'articles et du coût total du panier --- */ 
-function totalCart() {
+function totalCart(price) {
     let CartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
+    let priceItem = price;
+    console.log("prix", priceItem); 
     let totalCartQty = 0;
     let totalCartPrice = 0;
 
     //la boucle récupère les quantités et les prix de tous les articles enregistrés dans le localstorage
     for (let i = 0; i < CartRegistered.length; i++) {
-
         //Nouvelle clé/valeur du localStorage -- Comptabilise la quantité totale/ articles et leur quantité ajoutés 
         totalCartQty += CartRegistered[i].quantity;
         console.log("TCQ", totalCartQty);
         localStorage.setItem("totalQuantity", JSON.stringify(totalCartQty));
 
         //Nouvelle clé/valeur du localStorage -- Comptabilise le coût total/ articles et selon leur quantité ajoutés 
-        totalCartPrice += (CartRegistered[i].quantity * CartRegistered[i].price);
+        totalCartPrice += (CartRegistered[i].quantity * priceItem);
         console.log("TCP", totalCartPrice);
         localStorage.setItem("totalPrice", JSON.stringify(totalCartPrice));
     }
@@ -75,7 +91,7 @@ function totalCart() {
 }
 
 
-function totalCartAppear() {
+function totalCartAppear(){
     //récupération des valeurs enregistrées dans le localStorage que l'on intègre dans deux nouvelles variables 
     let totalCart = JSON.parse(localStorage.getItem("totalQuantity"));
     let totalCost = JSON.parse(localStorage.getItem("totalPrice"));
@@ -84,7 +100,7 @@ function totalCartAppear() {
     totalQtyCart.innerHTML = `<p>Total (<span id="totalQuantity">${totalCart}</span> articles) : <span id="totalPrice">${totalCost}</span> €</p>`;
 }
 
-function addQuantity() {
+function addQuantityButton(){
     //récupération des produits enregistrés dans le localstorage
     let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
     console.log("qté", cartRegistered);
@@ -92,20 +108,23 @@ function addQuantity() {
     const qtyButton = document.querySelectorAll('.itemQuantity');
     qtyButton.forEach((quantity) => {
         quantity.addEventListener("change", (e) => {
-//  diviser en deux fonctions 
-            for (item of cartRegistered) {
-                console.log("test0", item); 
-                //si l'id et la couleur du produit est égale à celle du dataset de notre input
-                if (item._id == quantity.dataset.id && item.color == quantity.dataset.color) {
-                    // console.log("test", item.quantity); 
-                    item.quantity = parseInt(e.target.value);
-                    localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
-                    //déclaration de totalCart afin de recompter le résultat après modification 
-                    totalCart();
-                }
-            }
+            addQuantityButton(); 
         })
     })
+}
+
+function addQuantityOption(){
+    for (item of cartRegistered) {
+        console.log("test0", item); 
+        //si l'id et la couleur du produit est égale à celle du dataset de notre input
+        if (item._id == quantity.dataset.id && item.color == quantity.dataset.color) {
+            // console.log("test", item.quantity); 
+            item.quantity = parseInt(e.target.value);
+            localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
+            //déclaration de totalCart afin de recompter le résultat après modification 
+            totalCart();
+        }
+    }
 }
 
 //Suppression d'un element à l'aide du bouton supprimer dans le panier 
