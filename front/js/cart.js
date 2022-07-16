@@ -31,7 +31,7 @@ function cartAppear() {
                                                                     </div>
                                                                 </div>
                                                             </article>`;
-                                                            
+
                 //Déclaration fonction supprimer et modifier quantité                                             
                 deleteItem();
                 addQuantityOption();  
@@ -189,8 +189,6 @@ function FormCheck() {
                 //personnalisation du message d'erreur
                 document.querySelector("#firstNameErrorMsg")
                     .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
-                document.querySelector("#firstNameErrorMsg")
-                    .style.color = "#fff";
                 document.querySelector("#firstName")
                     .style.border = "solid 2px red"
 
@@ -221,8 +219,6 @@ function FormCheck() {
                 //personnalisation du message d'erreur
                 document.querySelector("#lastNameErrorMsg")
                     .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
-                document.querySelector("#lastNameErrorMsg")
-                    .style.color = "#fff";
                 document.querySelector("#lastName")
                     .style.border = "solid 2px red"
 
@@ -253,8 +249,6 @@ function FormCheck() {
                 //personnalisation du message d'erreur
                 document.querySelector("#addressErrorMsg")
                     .innerHTML = "L'adresse comporte au moins un numéro suivi du nom de voie ";
-                document.querySelector("#addressErrorMsg")
-                    .style.color = "#fff";
                 document.querySelector("#address")
                     .style.border = "solid 2px red"
 
@@ -285,8 +279,6 @@ function FormCheck() {
                 //personnalisation du message d'erreur
                 document.querySelector("#cityErrorMsg")
                     .innerHTML = "Le nom de la commune doit contenir 3 lettres minimum et ne pas contenir de chiffre";
-                document.querySelector("#cityErrorMsg")
-                    .style.color = "#fff";
                 document.querySelector("#city")
                     .style.border = "solid 2px red"
 
@@ -317,8 +309,6 @@ function FormCheck() {
                 //personnalisation du message d'erreur
                 document.querySelector("#emailErrorMsg")
                     .innerHTML = "Email non valide, ex: Kanap@contact.fr";
-                document.querySelector("#emailErrorMsg")
-                    .style.color = "#fff";
                 document.querySelector("#email")
                     .style.border = "solid 2px red"
 
@@ -369,6 +359,8 @@ function submit(valueForm) {
                 products: orderId,
             };
             console.log(orderFinal);
+            //remise à zéro du localstorage 
+            localStorage.clear();
 
             //Déclaration de la fonction sendOrder()
             sendOrder(orderFinal);
