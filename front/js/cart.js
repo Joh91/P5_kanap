@@ -4,7 +4,7 @@ function cartAppear() {
     let addCart = JSON.parse(localStorage.getItem("productsInCart"));
 
     for (let i = 0; i < addCart.length; i++) {
-        fetch(`http://localhost:3000/api/products/${addCart[i]._id}`)
+    fetch(`http://localhost:3000/api/products/${addCart[i]._id}`)
             .then((res) => {
                 return res.json();
             })
@@ -24,13 +24,17 @@ function cartAppear() {
                                                                 <div class="cart__item__content__settings">
                                                                     <div class="cart__item__content__settings__quantity">
                                                                         <p>Qté : ${addCart[i].quantity} </p>
-                                                                        <input type="number" data-id="${addCart[i]._id}" data-color="${addCart[i].color}" class="itemQuantity" name="itemQuantity" min="1" max="100" value="1">
+                                                                        <input type="number" data-id="${addCart[i]._id}" data-color="${addCart[i].color}" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${addCart[i].quantity}">
                                                                     </div>
                                                                     <div class="cart__item__content__settings__delete">
                                                                         <p class="deleteItem" data-id="${addCart[i]._id}" data-color="${addCart[i].color}">Supprimer</p>
                                                                     </div>
                                                                 </div>
                                                             </article>`;
+                                                            
+                //Déclaration fonction supprimer et modifier quantité                                             
+                deleteItem();
+                addQuantityOption();  
             })
             .catch((err) => {
                 document
@@ -39,18 +43,20 @@ function cartAppear() {
 
                 console.log("erreur")
             });
+
+              
     }
 }
 
 //Déclaration des fonctions 
 cartAppear();
-totalQty();
-getPrice(); 
-addQuantityButton();
-deleteItem();
+addQuantityOption();
+getQty();
+getPrice();
 FormCheck();
 
-function totalQty(){
+/* ---- Totaux quantité & prix ---- */ 
+function getQty(){
     let itemQty = JSON.parse(localStorage.getItem("productsInCart")); 
     let totalQtyDisplay = document.querySelector("#totalQuantity")
     let totalQty = 0
@@ -79,78 +85,70 @@ function getPrice(){
         })
     }   
 }
-
-function addQuantityButton() {
+/* -------- Modification quantité --------*/ 
+function addQuantityOption(){
     //récupération des produits enregistrés dans le localstorage
     let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
-    // console.log("qtéItem", cartRegistered);
     // récupération des inputs et création d'une boucle afin d'itérer la création d'un event pour chacun d'eux 
     const qtyButton = document.querySelectorAll(".itemQuantity");
-    // console.log("test button", qtyButton);
-    for (quantity of qtyButton) {
-        quantity.addEventListener("change", (e) => {
-            console.log("bg jj");
-            addQuantityButton();
+    qtyButton.forEach((item) => {
+        item.addEventListener("change", (e) => {
+            for (products of cartRegistered) {
+                //si l'id et la couleur du produit est égale à celle du dataset de notre input
+                if (products._id == item.dataset.id && products.color == item.dataset.color) {
+                    // cartRegistered.quantity = productsQty.quantity + parseInt(e.target.value); 
+                    // console.log("test", cartRegistered.quantity); 
+                    products.quantity = parseInt(e.target.value); 
+                    console.log("test", products.quantity);
+                    localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
+                    //rechargement de la page
+                    window.location.href = "cart.html";
+                }
+            }
         })
-    }
-    // qtyButton.forEach((quantity) => {
-    //     quantity.addEventListener("change", (e) => {
-
-    //     })
-    // })
+    })
 }
 
-function addQuantityOption() {
-    for (item of cartRegistered) {
-        console.log("test0", item);
-        //si l'id et la couleur du produit est égale à celle du dataset de notre input
-        if (item._id == quantity.dataset.id && item.color == quantity.dataset.color) {
-            // console.log("test", item.quantity); 
-            item.quantity = parseInt(e.target.value);
-            localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
-            //déclaration de totalCart afin de recompter le résultat après modification 
-            totalCart();
-        }
-    }
-}
-
-//Suppression d'un element à l'aide du bouton supprimer dans le panier 
+/* ----------- Suppression d'un element à l'aide du bouton supprimer dans le panier -------*/ 
 function deleteItem() {
-    //récupération du bouton supprimer
-    const deletedButton = document.querySelectorAll(".deleteItem");
-    //ForEach répète la création de l'évènement sur le bouton par le nombre d'élément dans notre panier
-    deletedButton.forEach((items) => {
-        items.addEventListener("click", () => {
-            let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
-            let newCart = [];
-
-            //si le localstorage ne detient que un seul item on supprime celui-ci avec removeItem 
-            if (cartRegistered.length == 1) {
-                return (
-                    localStorage.removeItem("productsInCart"),
-                    console.log("hello"),
-                    //permet de forcer l'actualisation de la page
-                    window.location.href = "cart.html"
-                );
-            } else {
-                /*-Utilisation de filter pour la suppression des items
-                **on récupère les produits du localstorage; filter récupère les éléments dans l'array et les déclare dans element 
-                *** dataset.id et dataset.color permettent de distinguer les bouton supprimer et de créer une comparaison 
-                 */
-                newCart = cartRegistered.filter((element => {
-                    /* - si l'id et la couleur de l'un des produits du panier est contraire à l'id et/ou 
-                    la couleur rattachés au bouton supprimer on conserve les éléments dans un nouveau tableau - */
-                    if (element._id != items.dataset.id || element.color != items.dataset.color) {
-                        return true;
-                    }
-                }));
-                //le nouveau array est sauvegardé dans le localstorage, la page actualisée
-                localStorage.setItem("productsInCart", JSON.stringify(newCart));
-                window.location.href = "cart.html";
-            };
-        });
-    });
+       //récupération du bouton supprimer
+       const deletedButton = document.querySelectorAll(".deleteItem");
+       console.log("test button", deletedButton); 
+       // ForEach répète la création de l'évènement sur le bouton par le nombre d'élément dans notre panier
+       deletedButton.forEach((items) => {
+           items.addEventListener("click", () => {
+               console.log("test click", "hellohello"); 
+               let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
+                let newCart = [];
+                //si le localstorage ne detient que un seul item on supprime celui-ci avec removeItem 
+                if (cartRegistered.length == 1) {
+                    return (
+                        localStorage.removeItem("productsInCart"),
+                        console.log("hello"),
+                        //permet de forcer l'actualisation de la page
+                        window.location.href = "cart.html"
+                    );
+                } else {
+                    /*-Utilisation de filter pour la suppression des items
+                    **on récupère les produits du localstorage; filter récupère les éléments dans l'array et les déclare dans element 
+                    *** dataset.id et dataset.color permettent de distinguer les bouton supprimer et de créer une comparaison 
+                    */
+                    newCart = cartRegistered.filter((element => {
+                        /* - si l'id et la couleur de l'un des produits du panier est contraire à l'id et/ou 
+                        la couleur rattachés au bouton supprimer on conserve les éléments dans un nouveau tableau - */
+                        if (element._id != items.dataset.id || element.color != items.dataset.color) {
+                            return true;
+                        }
+                    }));
+                    //le nouveau array est sauvegardé dans le localstorage, la page actualisée
+                    localStorage.setItem("productsInCart", JSON.stringify(newCart));
+                    window.location.href = "cart.html";
+                };
+            })
+        }) 
 }
+    
+
 
 
 
