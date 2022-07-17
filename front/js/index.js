@@ -1,5 +1,5 @@
 
-/*on realise ici une requête de type GET afin de récupérer les produits et pouvoir les integrer
+/*On realise ici une requête de type GET afin de récupérer les produits et pouvoir les integrer
 de façon dynamique dans notre homepage*/ 
 
 function productsAppear() {

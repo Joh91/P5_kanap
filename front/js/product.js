@@ -1,5 +1,5 @@
 /* -- Récupération de l'Id dans notre URL --*/ 
-function getId (){//met en avant le parametre de notre url    
+function getId(){//met en avant le parametre de notre url    
     const urlProduct = window.location.search;
     // récupération de la valeur du parametre 
     const urlParams = new URLSearchParams(urlProduct);
@@ -8,7 +8,7 @@ function getId (){//met en avant le parametre de notre url
 
     //Declaration de la fonction productAppear dans getID afin de récupérer la valeur de newID
     productAppear(newId); 
-}
+};
 //déclaration de getId()
 getId();
     
@@ -84,8 +84,9 @@ function productsSelection(dataProducts){
 
     //Déclaration d'inToLocalStorage dans la fonction pour récupérer la valeur optionChoice
     inToLocalStorage(optionChoice);
-}
+};
 
+/* --- Intégration des produits selectionnés dans le localstorage --- */ 
 function inToLocalStorage(optionChoice){
     let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
     //On vérifie si le localstorage détient déjà un élément
@@ -98,21 +99,21 @@ function inToLocalStorage(optionChoice){
         /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
         sont identique, on incrémente la quantité,-*/
         for (let i = 0; i < cartArray.length; i++){
-            if (cartArray[i]._id == optionChoice._id && cartArray[i].color == optionChoice.color){
+            if (cartArray[i]._id === optionChoice._id && cartArray[i].color === optionChoice.color){
                 return (cartArray[i].quantity += parseInt(optionChoice.quantity),
                 localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
             }
         }
 
         /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
-        est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage 
+        est identiques, mais la couleur différente, on ajoute le nouveau produit dans le localStorage 
         
         Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
         for (let i = 0; i < cartArray.length; i++){
-            if (cartArray[i]._id == optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != optionChoice._id ){
+            if (cartArray[i]._id === optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != optionChoice._id ){
                 return (cartArray.push(optionChoice), 
                 localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
             }
         } 
     }    
-}
+};

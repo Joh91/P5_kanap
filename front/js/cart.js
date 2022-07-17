@@ -3,6 +3,7 @@ function cartAppear() {
     //récupération des produits enregistrés dans le localStorage
     let addCart = JSON.parse(localStorage.getItem("productsInCart"));
 
+    //récupération du prix/image/text alternatif par produit grâce à une requête Get
     for (let i = 0; i < addCart.length; i++) {
     fetch(`http://localhost:3000/api/products/${addCart[i]._id}`)
             .then((res) => {
@@ -42,15 +43,12 @@ function cartAppear() {
                     .innerText += "Nous ne sommes pas parvenu à afficher les éléments attendus, veuillez-vous excuser";
 
                 console.log("erreur")
-            });
-
-              
+            });         
     }
-}
+};
 
 //Déclaration des fonctions 
 cartAppear();
-addQuantityOption();
 getQty();
 getPrice();
 FormCheck();
@@ -65,7 +63,7 @@ function getQty(){
         totalQty += itemQty[i].quantity;
         totalQtyDisplay.innerHTML = totalQty;
     }
-}
+};
 
 function getPrice(){
     let totalPriceDisplay = document.querySelector("#totalPrice"); 
@@ -84,7 +82,8 @@ function getPrice(){
                 totalPriceDisplay.innerHTML = totalPrice
         })
     }   
-}
+};
+
 /* -------- Modification quantité --------*/ 
 function addQuantityOption(){
     //récupération des produits enregistrés dans le localstorage
@@ -95,9 +94,7 @@ function addQuantityOption(){
         item.addEventListener("change", (e) => {
             for (products of cartRegistered) {
                 //si l'id et la couleur du produit est égale à celle du dataset de notre input
-                if (products._id == item.dataset.id && products.color == item.dataset.color) {
-                    // cartRegistered.quantity = productsQty.quantity + parseInt(e.target.value); 
-                    // console.log("test", cartRegistered.quantity); 
+                if (products._id === item.dataset.id && products.color === item.dataset.color) {
                     products.quantity = parseInt(e.target.value); 
                     console.log("test", products.quantity);
                     localStorage.setItem("productsInCart", JSON.stringify(cartRegistered));
@@ -107,7 +104,7 @@ function addQuantityOption(){
             }
         })
     })
-}
+};
 
 /* ----------- Suppression d'un element à l'aide du bouton supprimer dans le panier -------*/ 
 function deleteItem() {
@@ -117,8 +114,7 @@ function deleteItem() {
        // ForEach répète la création de l'évènement sur le bouton par le nombre d'élément dans notre panier
        deletedButton.forEach((items) => {
            items.addEventListener("click", () => {
-               console.log("test click", "hellohello"); 
-               let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
+                let cartRegistered = JSON.parse(localStorage.getItem("productsInCart"));
                 let newCart = [];
                 //si le localstorage ne detient que un seul item on supprime celui-ci avec removeItem 
                 if (cartRegistered.length == 1) {
@@ -146,19 +142,13 @@ function deleteItem() {
                 };
             })
         }) 
-}
+};
     
-
-
-
-
 /*------------------------Gestion du formulaire --------------------*/
 //on déclare des variables pour chaque input afin de les récupérer 
-
 function FormCheck() {
     let valueForm = [];
-
-    //Déclaration des fonctions
+    //Déclaration des fonctions qui récupère la valeur de valueForm 
     firstName(valueForm);
     lastName(valueForm);
     address(valueForm);
@@ -166,167 +156,166 @@ function FormCheck() {
     email(valueForm);
     //Déclaration de submit dans FormCheck() pour récupérer valueForm 
     submit(valueForm);
+};
 
-    /* --- verification du prénom ---*/
-    function firstName(valueForm) {
-        const firstName = document.querySelector("#firstName");
-        firstName.addEventListener("change", (firstName) => {
-            //si la valeur saisie répond aux critères
-            //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
-            if (firstName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)) {
-                document.querySelector("#firstNameErrorMsg")
-                    .innerHTML = "";
-                document.querySelector("#firstName")
-                    .style.border = ""
+/* --- verification du prénom ---*/
+function firstName(valueForm) {
+    const firstName = document.querySelector("#firstName");
+    firstName.addEventListener("change", (firstName) => {
+        //si la valeur saisie répond aux critères
+        //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
+        if (firstName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)) {
+            document.querySelector("#firstNameErrorMsg")
+                .innerHTML = "";
+            document.querySelector("#firstName")
+                .style.border = ""
 
-                let valueFirstName = firstName.target.value
-                valueForm.push(valueFirstName);
-                console.log(valueForm);
-                console.log(valueFirstName);
-            }
-            //sinon envoi d'un message d'erreur
-            else {
-                //personnalisation du message d'erreur
-                document.querySelector("#firstNameErrorMsg")
-                    .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
-                document.querySelector("#firstName")
-                    .style.border = "solid 2px red"
+            let valueFirstName = firstName.target.value
+            valueForm.push(valueFirstName);
+            console.log(valueForm);
+            console.log(valueFirstName);
+        }
+        //sinon envoi d'un message d'erreur
+        else {
+            //personnalisation du message d'erreur
+            document.querySelector("#firstNameErrorMsg")
+                .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
+            document.querySelector("#firstName")
+                .style.border = "solid 2px red"
 
-                let valueFirstName = null;
-                console.log(valueFirstName);
-            }
-        });
-    }
+            let valueFirstName = null;
+            console.log(valueFirstName);
+        }
+    });
+};
 
-    /* --- verification du nom ---*/
-    function lastName(valueForm) {
-        const lastName = document.querySelector("#lastName");
-        lastName.addEventListener("change", (lastName) => {
-            //si la valeur saisie répond aux critères
-            //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
-            if (lastName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)) {
-                document.querySelector("#lastNameErrorMsg")
-                    .innerHTML = "";
-                document.querySelector("#lastName")
-                    .style.border = "";
+/* --- verification du nom ---*/
+function lastName(valueForm) {
+    const lastName = document.querySelector("#lastName");
+    lastName.addEventListener("change", (lastName) => {
+        //si la valeur saisie répond aux critères
+        //Regex: minuscules et majuscules autorisées, 3 à 25 caractères requis
+        if (lastName.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)) {
+            document.querySelector("#lastNameErrorMsg")
+                .innerHTML = "";
+            document.querySelector("#lastName")
+                .style.border = "";
 
-                let valueLastName = lastName.target.value;
-                valueForm.push(valueLastName);
-                console.log(valueLastName);
-            }
-            //sinon envoi d'un message d'erreur
-            else {
-                //personnalisation du message d'erreur
-                document.querySelector("#lastNameErrorMsg")
-                    .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
-                document.querySelector("#lastName")
-                    .style.border = "solid 2px red"
+            let valueLastName = lastName.target.value;
+            valueForm.push(valueLastName);
+            console.log(valueLastName);
+        }
+        //sinon envoi d'un message d'erreur
+        else {
+            //personnalisation du message d'erreur
+            document.querySelector("#lastNameErrorMsg")
+                .innerHTML = "Le champ doit contenir entre 3 à 25 caractères, et ne doit pas contenir de chiffres et de caractères spéciaux";
+            document.querySelector("#lastName")
+                .style.border = "solid 2px red"
 
-                let valueLastName = null;
-                console.log(valueLastName);
-            }
-        });
-    }
+            let valueLastName = null;
+            console.log(valueLastName);
+        }
+    });
+};
 
-    /* --- verification de l'adresse  ---*/
-    function address(valueForm) {
-        const address = document.querySelector("#address");
-        address.addEventListener("change", (address) => {
-            //si la valeur saisie répond aux critères
-            //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-            if (address.target.value.match(/^[0-9]{1,3} [/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s]{3,35}$/)) {
-                document.querySelector("#addressErrorMsg")
-                    .innerHTML = "";
-                document.querySelector("#address")
-                    .style.border = ""
+/* --- verification de l'adresse  ---*/
+function address(valueForm) {
+    const address = document.querySelector("#address");
+    address.addEventListener("change", (address) => {
+        //si la valeur saisie répond aux critères
+        //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+        if (address.target.value.match(/^[0-9]{1,3} [/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s]{3,35}$/)) {
+            document.querySelector("#addressErrorMsg")
+                .innerHTML = "";
+            document.querySelector("#address")
+                .style.border = ""
 
-                let valueAddress = address.target.value;
-                valueForm.push(valueAddress);
-                console.log(valueAddress);
-            }
-            //sinon envoi d'un message d'erreur
-            else {
-                //personnalisation du message d'erreur
-                document.querySelector("#addressErrorMsg")
-                    .innerHTML = "L'adresse comporte au moins un numéro suivi du nom de voie ";
-                document.querySelector("#address")
-                    .style.border = "solid 2px red"
+            let valueAddress = address.target.value;
+            valueForm.push(valueAddress);
+            console.log(valueAddress);
+        }
+        //sinon envoi d'un message d'erreur
+        else {
+            //personnalisation du message d'erreur
+            document.querySelector("#addressErrorMsg")
+                .innerHTML = "L'adresse comporte au moins un numéro suivi du nom de voie ";
+            document.querySelector("#address")
+                .style.border = "solid 2px red"
 
-                let valueAddress = null;
-                console.log(valueAddress);
-            }
-        });
-    }
+            let valueAddress = null;
+            console.log(valueAddress);
+        }
+    });
+};
 
-    /* --- verification de la ville  ---*/
-    function city(valueForm) {
-        const city = document.querySelector("#city");
-        city.addEventListener("change", (city) => {
-            //si la valeur saisie répond aux critères
-            //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-            if (city.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)) {
-                document.querySelector("#cityErrorMsg")
-                    .innerHTML = "";
-                document.querySelector("#city")
-                    .style.border = ""
+/* --- verification de la ville  ---*/
+function city(valueForm) {
+    const city = document.querySelector("#city");
+    city.addEventListener("change", (city) => {
+        //si la valeur saisie répond aux critères
+        //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+        if (city.target.value.match(/^[a-záàâäãåçéèêëíìîïñóòôöõúùûüýÿæœA-Z\s'-]{3,25}$/)) {
+            document.querySelector("#cityErrorMsg")
+                .innerHTML = "";
+            document.querySelector("#city")
+                .style.border = ""
 
-                let valueCity = city.target.value;
-                valueForm.push(valueCity);
-                console.log(valueCity);
-            }
-            //sinon envoi d'un message d'erreur
-            else {
-                //personnalisation du message d'erreur
-                document.querySelector("#cityErrorMsg")
-                    .innerHTML = "Le nom de la commune doit contenir 3 lettres minimum et ne pas contenir de chiffre";
-                document.querySelector("#city")
-                    .style.border = "solid 2px red"
+            let valueCity = city.target.value;
+            valueForm.push(valueCity);
+            console.log(valueCity);
+        }
+        //sinon envoi d'un message d'erreur
+        else {
+            //personnalisation du message d'erreur
+            document.querySelector("#cityErrorMsg")
+                .innerHTML = "Le nom de la commune doit contenir 3 lettres minimum et ne pas contenir de chiffre";
+            document.querySelector("#city")
+                .style.border = "solid 2px red"
 
-                let valueCity = null;
-                console.log(valueCity);
-            }
-        });
-    }
+            let valueCity = null;
+            console.log(valueCity);
+        }
+    });
+};
 
-    /* --- verification de l'Email  ---*/
-    function email(valueForm) {
-        const email = document.querySelector("#email");
-        email.addEventListener("change", (email) => {
-            //si la valeur saisie répond aux critères
-            //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
-            if (email.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
-                document.querySelector("#emailErrorMsg")
-                    .innerHTML = "";
-                document.querySelector("#email")
-                    .style.border = "";
+/* --- verification de l'Email  ---*/
+function email(valueForm) {
+    const email = document.querySelector("#email");
+    email.addEventListener("change", (email) => {
+        //si la valeur saisie répond aux critères
+        //Regex: minuscules et majuscules autorisées, 3 à 35 caractères requis
+        if (email.target.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) {
+            document.querySelector("#emailErrorMsg")
+                .innerHTML = "";
+            document.querySelector("#email")
+                .style.border = "";
 
-                let valueEmail = email.target.value;
-                valueForm.push(valueEmail);
-                console.log(valueEmail);
-            }
-            //sinon envoi d'un message d'erreur
-            else {
-                //personnalisation du message d'erreur
-                document.querySelector("#emailErrorMsg")
-                    .innerHTML = "Email non valide, ex: Kanap@contact.fr";
-                document.querySelector("#email")
-                    .style.border = "solid 2px red"
+            let valueEmail = email.target.value;
+            valueForm.push(valueEmail);
+            console.log(valueEmail);
+        }
+        //sinon envoi d'un message d'erreur
+        else {
+            //personnalisation du message d'erreur
+            document.querySelector("#emailErrorMsg")
+                .innerHTML = "Email non valide, ex: Kanap@contact.fr";
+            document.querySelector("#email")
+                .style.border = "solid 2px red"
 
-                let valueEmail = null;
-                console.log(valueEmail);
-            }
-        });
-    }
-}
+            let valueEmail = null;
+            console.log(valueEmail);
+        }
+    });
+};
 
 /* -------------- Confirmation de commande -----------------*/
-//recupération du submit et création de l'évènement 
 function submit(valueForm) {
     //récupération de l'id du bouton commander
     const formContact = document.querySelector("#order");
     //création d'un évènement
     formContact.addEventListener("click", (e) => {
-        // e.preventDefault(); 
+        e.preventDefault(); 
         console.log(valueForm);
 
         //si les valeurs retournées pour chaque input sont différentes de null et intégrées dans valueForm[]
@@ -359,8 +348,6 @@ function submit(valueForm) {
                 products: orderId,
             };
             console.log(orderFinal);
-            //remise à zéro du localstorage 
-            localStorage.clear();
 
             //Déclaration de la fonction sendOrder()
             sendOrder(orderFinal);
@@ -369,8 +356,7 @@ function submit(valueForm) {
             alert("Veuillez compléter le formulaire intégralement");
         }
     });
-}
-
+};
 
 function sendOrder(orderFinal) {
     //Si orderFinal (object contact + tableau id-produit) est true 
@@ -392,6 +378,10 @@ function sendOrder(orderFinal) {
             .then((data) => {
                 //l'order-ID se trouve désormais dans data
                 console.log(data);
+
+                //remise à zéro du localstorage 
+                localStorage.clear();
+
                 //modification de l'url afin d'envoyer la réponse à notre page confirmation
                 window.location.href = `./confirmation.html?orderId=${data.orderId}`;
                 console.log(window.location.href)
@@ -401,7 +391,7 @@ function sendOrder(orderFinal) {
                 alert("Une erreur est survenue, veuillez réessayer")
             })
     }
-}
+};
 
 
 
