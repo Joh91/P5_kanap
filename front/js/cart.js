@@ -127,11 +127,11 @@ function deleteItem() {
                 } else {
                     /*-Utilisation de filter pour la suppression des items
                     **on récupère les produits du localstorage; filter récupère les éléments dans l'array et les déclare dans element 
-                    *** dataset.id et dataset.color permettent de distinguer les bouton supprimer et de créer une comparaison 
+                    *** dataset.id et dataset.color permettent de distinguer les boutons supprimer et de créer une comparaison 
                     */
                     newCart = cartRegistered.filter((element => {
                         /* - si l'id et la couleur de l'un des produits du panier est contraire à l'id et/ou 
-                        la couleur rattachés au bouton supprimer on conserve les éléments dans un nouveau tableau - */
+                        la couleur rattachée au bouton supprimer on conserve les éléments dans un nouveau tableau - */
                         if (element._id != items.dataset.id || element.color != items.dataset.color) {
                             return true;
                         }
