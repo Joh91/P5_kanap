@@ -81,7 +81,8 @@ function productsSelection(dataProducts){
     color : selectColors.value, 
     quantity : parseInt(selectQty.value), 
     };
-    console.log(optionChoice); 
+    console.log(optionChoice.color);
+    console.log(optionChoice.quantity);
 
     //Déclaration d'inToLocalStorage dans la fonction pour récupérer la valeur optionChoice
     inToLocalStorage(optionChoice);
@@ -90,31 +91,37 @@ function productsSelection(dataProducts){
 /* --- Intégration des produits selectionnés dans le localstorage --- */ 
 function inToLocalStorage(optionChoice){
     let cartArray = JSON.parse(localStorage.getItem("productsInCart"));
-    //On vérifie si le localstorage détient déjà un élément
-    //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
-    if (cartArray == null){
-        cartArray = [];
-        cartArray.push(optionChoice); 
-        localStorage.setItem("productsInCart", JSON.stringify(cartArray));
-    } else if (cartArray != null){
-        /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
-        sont identiques, on incrémente la quantité,-*/
-        for (let i = 0; i < cartArray.length; i++){
-            if (cartArray[i]._id === optionChoice._id && cartArray[i].color === optionChoice.color){
-                return (cartArray[i].quantity += parseInt(optionChoice.quantity),
-                localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
-            }
-        }
 
-        /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
-        est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage 
-        
-        Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
-        for (let i = 0; i < cartArray.length; i++){
-            if (cartArray[i]._id === optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != optionChoice._id ){
-                return (cartArray.push(optionChoice), 
-                localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
+        // On vérifie que l'utilisateur à bien saisi une quantité et une couleur 
+        if (optionChoice.color === "" || optionChoice.quantity === 0){
+            alert("veuillez saisir une couleur et une quantité")
+        } else {
+            //On vérifie si le localstorage détient déjà un élément
+        //Si CartArray est nul alors le localstorage est vide, on ajoute alors notre produit dans le localstorage 
+        if (cartArray == null){
+            cartArray = [];
+            cartArray.push(optionChoice); 
+            localStorage.setItem("productsInCart", JSON.stringify(cartArray));
+        } else if (cartArray != null){
+            /*-le localstorage à un produit; pour chaque nouveaux produits si l'id et la couleur 
+            sont identiques, on incrémente la quantité,-*/
+            for (let i = 0; i < cartArray.length; i++){
+                if (cartArray[i]._id === optionChoice._id && cartArray[i].color === optionChoice.color){
+                    return (cartArray[i].quantity += parseInt(optionChoice.quantity),
+                    localStorage.setItem("productsInCart", JSON.stringify(cartArray))); 
+                }
             }
-        } 
-    }    
+
+            /*-le localstorage à un produit; pour chaque nouveaux produits si l'id 
+            est identique, mais la couleur différente, on ajoute le nouveau produit dans le localStorage 
+            
+            Ou alors l'id du nouvel item est différent de celui présent dans le localstorage, que l'on va insérer dans cartArray-*/
+            for (let i = 0; i < cartArray.length; i++){
+                if (cartArray[i]._id === optionChoice._id && cartArray[i].color != optionChoice.color || cartArray[i]._id != optionChoice._id ){
+                    return (cartArray.push(optionChoice), 
+                    localStorage.setItem("productsInCart", JSON.stringify(cartArray)));
+                }
+            } 
+        }    
+        }
 };

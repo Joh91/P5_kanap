@@ -379,12 +379,12 @@ function sendOrder(orderFinal) {
                 //l'order-ID se trouve désormais dans data
                 console.log(data);
 
-                //remise à zéro du localstorage 
-                localStorage.clear();
-
                 //modification de l'url afin d'envoyer la réponse à notre page confirmation
                 window.location.href = `./confirmation.html?orderId=${data.orderId}`;
                 console.log(window.location.href)
+
+                //remise à zéro du localstorage 
+                localStorage.clear();
             })
             .catch((err) => {
                 console.log("erreur");
